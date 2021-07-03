@@ -17,8 +17,8 @@ def dict_factory(cursor, row):
 
 @app.route('/', methods=['GET'])
 def home():
-    return '''<h1>Distant Reading Archive</h1>
-<p>A prototype API for distant reading of science fiction novels.</p>'''
+    return '''<h1>CoWIN Center Timings</h1>
+<p>A prototype API for getting center timings.</p>'''
 
 
 @app.route('/api/v1/centers/all', methods=['GET'])
