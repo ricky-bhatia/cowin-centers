@@ -1,11 +1,13 @@
 import flask
 from flask import request, jsonify
+from flask_cors import CORS
 #import sqlite3
 from sqlite3worker2 import Sqlite3Worker
 
 
 app = flask.Flask(__name__)
 app.config["DEBUG"] = True
+CORS(app)
 sql_worker = Sqlite3Worker("timings.db")
 
 def dict_factory(cursor, row):
