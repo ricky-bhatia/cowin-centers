@@ -1,5 +1,5 @@
 import flask
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from flask_cors import CORS
 #import sqlite3
 from sqlite3worker2 import Sqlite3Worker
@@ -75,7 +75,7 @@ def api_filter():
     # results = cur.execute(query, to_filter).fetchall()
     results = sql_worker.execute(query, to_filter)
 
-    return jsonify(results)
+    return make_response(jsonify(results), 200)
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
