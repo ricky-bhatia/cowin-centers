@@ -42,6 +42,7 @@ def api_filter():
     district_id = query_parameters.get('district_id')
     center_id   = query_parameters.get('center_id')
     pincode     = query_parameters.get('pincode')
+    past_days   = query_parameters.get('past_days')
 
     query = "SELECT c.center_id, c.pincode, c.name, t.district_id, t.posting_ts, t.slots, t.age, t.vaccine FROM centers c , timings t WHERE c.center_id = t.center_id AND"
 
@@ -56,7 +57,11 @@ def api_filter():
     if pincode:
         query += ' c.pincode=? AND'
         to_filter.append(pincode)
-    if query_parameters and not (district_id or center_id or pincode):
+    if past_days:
+        temp = "(SELECT DATETIME('now', '-%s day'))"%past_days
+        query += " t.posting_ts > (SELECT DATETIME('now', '-%s day')) AND"%past_days
+        #to_filter.append(temp)
+    if query_parameters and not (district_id or center_id or pincode or past_days):
         return page_not_found(404)
 
     query = query[:-4] + ';'
