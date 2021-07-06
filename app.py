@@ -17,7 +17,7 @@ def dict_factory(cursor, row):
     return d
 
 def compress_response(payload, status_code=200):
-    content  = gzip.compress(json.dumps(payload).encode('utf8'), 5)
+    content  = gzip.compress(json.dumps(payload).encode('utf8'), 9)
     response = make_response(content, status_code)
     response.headers['Content-length'] = len(content)
     response.headers['Content-Encoding'] = 'gzip'
