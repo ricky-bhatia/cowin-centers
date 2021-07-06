@@ -1,7 +1,7 @@
 import flask
-from flask import request, jsonify, make_response
+import gzip
+from flask import request, jsonify, make_response, json
 from flask_cors import CORS
-#import sqlite3
 from sqlite3worker2 import Sqlite3Worker
 
 
@@ -16,7 +16,13 @@ def dict_factory(cursor, row):
         d[col[0]] = row[idx]
     return d
 
-
+def compress_response(payload, status_code=200):
+    content  = gzip.compress(json.dumps(payload).encode('utf8'), 5)
+    response = make_response(content, status_code)
+    response.headers['Content-length'] = len(content)
+    response.headers['Content-Encoding'] = 'gzip'
+    return response
+    
 @app.route('/', methods=['GET'])
 def home():
     return '''<h1>CoWIN Center Timings</h1>
@@ -79,7 +85,8 @@ def api_filter():
     # results = cur.execute(query, to_filter).fetchall()
     results = sql_worker.execute(query, to_filter)
 
-    return make_response(jsonify(results), 200)
+    #return make_response(jsonify(results), 200)
+    return compress_response(results, 200)
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
