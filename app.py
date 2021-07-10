@@ -101,6 +101,23 @@ def api_filter():
         else:
             return compress_response({"error":"mandatory keys not found in post data"}, 400)
 
+@app.route('/api/v1/booking/count', methods=['GET','POST'])
+def api_booking():
+    if request.method == 'GET':
+        query = 'SELECT sum(slots) as "Count" from bookings'
+        results = sql_worker.execute(query)
+        return compress_response(results, 200)
+
+    if request.method == 'POST':
+        data = request.get_json()
+        keys = ['center_id','slots']
+        if all(key in data for key in keys):
+            count_sql = "INSERT into bookings (center_id, slots) values (?,?)"
+            sql_worker.execute(count_sql, (data.get('center_id'),data.get('slots')))
+            return compress_response({"result":"entry added successfully"}, 200)
+        else:
+            return compress_response({"error":"mandatory keys not found in post data"}, 400)
+
 
 if __name__ == '__main__':
     # Threaded option to enable multiple instances for multiple user access support
